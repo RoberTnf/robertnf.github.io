@@ -14,8 +14,14 @@ class Polynomial {
       let degree = Math.floor(i / 2)
       let imaginary = i % 2 === 1
       let element = imaginary ? complex(0, el) : complex(el, 0)
-      let res = add(multiply(element, pow(x, degree)), acc)
-      return complex("0")
+
+      //let exp_result = 1
+      //for (var i = 0; i < degree; i++) {
+      //  exp_result = multiply(exp_result, x)
+      //}
+      let exp_result = pow(x, degree)
+      let res = add(multiply(element, exp_result), acc)
+      return res
     }, 0)
   }
 

@@ -1,7 +1,7 @@
-import { Component, createRef, useRef } from "react"
+import { Component, createContext, createRef, useRef } from "react"
 import { Polynomial } from "../../utils/newton/polynomial"
 import * as palette from "google-palette"
-import { add, complex, multiply, pi, square, subtract } from "mathjs"
+import { add, complex, max, min, multiply, pi, square, subtract } from "mathjs"
 import { newton } from "../../utils/newton/newton"
 import { BinaryHeap } from "../../utils/binary-heap.js"
 
@@ -12,35 +12,59 @@ class Canvas extends Component {
     this.height = 400
     this.width = 900
     this.drawFractal = this.drawFractal.bind(this)
+    this.onMouseDown = this.onMouseDown.bind(this)
+    this.onMouseUp = this.onMouseUp.bind(this)
+    this.state = { range: this.props.roots.range(0.1) }
+    this.handleChangeRange = this.handleChangeRange.bind(this)
+    this.start = null
+  }
+
+  handleChangeRange(range) {
+    let newState = Object.assign({}, this.state)
+    newState.range = range
+    this.setState(newState)
+  }
+
+  coordToPx = (x, y, range) => {
+    const xFraction = (x - range.x.min) / (range.x.max - range.x.min)
+    const yFraction = (y - range.y.min) / (range.y.max - range.y.min)
+
+    return [xFraction * this.width, this.height * (1 - yFraction)]
+  }
+  PxToCoord = (x, y, range) => {
+    const canvas = this.ref.current
+    const xFraction = x / canvas.width
+    const yFraction = (y - canvas.height) / -canvas.height
+
+    return [
+      range.x.min + xFraction * (range.x.max - range.x.min),
+      range.y.min + yFraction * (range.y.max - range.y.min),
+    ]
   }
 
   drawFractal() {
     const roots = this.props.roots
     const canvas = this.ref.current
     const ctx = canvas.getContext("2d")
-    ctx.translate(0.5, 0.5)
-    const range = roots.range(0.1)
-    const coordToPx = (x, y) => {
-      const xFraction = (x - range.x.min) / (range.x.max - range.x.min)
-      const yFraction = (y - range.y.min) / (range.y.max - range.y.min)
-
-      return [xFraction * this.width, this.height * (1 - yFraction)]
-    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
     const pal = palette("tol", roots.r.length)
 
     const polynomial = Polynomial.fromRoots(roots)
     const derivative = polynomial.derivative
     const triangles = getTriangles(
-      range,
+      this.state.range,
       polynomial,
       derivative,
       roots,
-      this.props.nNewtonSteps
+      this.props.nNewtonSteps,
+      this.props.nTriangles
     )
 
     triangles.content.forEach((tt) => {
       ctx.beginPath()
-      const [p1, p2, p3] = tt.points.map((el) => coordToPx(el.re, el.im))
+      const [p1, p2, p3] = tt.points.map((el) =>
+        this.coordToPx(el.re, el.im, this.state.range)
+      )
       ctx.moveTo(...p1)
       ctx.lineTo(...p2)
       ctx.lineTo(...p3)
@@ -48,12 +72,32 @@ class Canvas extends Component {
       ctx.fillStyle = "#" + pal[tt.closestRoot[0]]
       ctx.strokeStyle = "black"
       ctx.strokeStyle = "#" + pal[tt.closestRoot[0]]
-      ctx.lineWidth = 3
-      ctx.stroke()
+      ctx.lineWidth = 2
       ctx.fill()
+      ctx.stroke()
+
+      if (false) {
+        ctx.strokeStyle = "black"
+        ctx.lineWidth = 1
+        ctx.beginPath()
+        ctx.arc(...p1, 1, 0, 2 * pi)
+        ctx.fillStyle = "#" + pal[tt.closestRoot[0]]
+        ctx.fill()
+        ctx.stroke()
+        ctx.beginPath()
+        ctx.arc(...p2, 1, 0, 2 * pi)
+        ctx.fillStyle = "#" + pal[tt.closestRoot[1]]
+        ctx.fill()
+        ctx.stroke()
+        ctx.beginPath()
+        ctx.arc(...p3, 1, 0, 2 * pi)
+        ctx.fillStyle = "#" + pal[tt.closestRoot[2]]
+        ctx.fill()
+        ctx.stroke()
+      }
     })
     roots.r.forEach((r, i) => {
-      const p = coordToPx(r.re, r.im)
+      const p = this.coordToPx(r.re, r.im, this.state.range)
       ctx.beginPath()
       ctx.arc(...p, 5, 0, 2 * pi)
       ctx.fillStyle = "#" + pal[i]
@@ -64,12 +108,37 @@ class Canvas extends Component {
     })
   }
 
+  clientToCanvas(x, y) {
+    const canvas = this.ref.current
+    const rect = canvas.getBoundingClientRect()
+    return [x - rect.left, y - rect.top]
+  }
+
   componentDidMount() {
     this.drawFractal()
   }
 
   componentDidUpdate() {
     this.drawFractal()
+  }
+
+  onMouseDown(event) {
+    let [x, y] = this.clientToCanvas(event.clientX, event.clientY)
+    this.start = this.PxToCoord(x, y, this.state.range)
+    console.log("Start: ", this.start)
+  }
+
+  onMouseUp(event) {
+    let [canvasx, canvasy] = this.clientToCanvas(event.clientX, event.clientY)
+    let end = this.PxToCoord(canvasx, canvasy, this.state.range)
+    console.log("End: ", end)
+    let x = [this.start[0], end[0]]
+    let y = [this.start[1], end[1]]
+    let range = {
+      x: { min: min(...x), max: max(...x) },
+      y: { min: min(...y), max: max(...y) },
+    }
+    this.handleChangeRange(range)
   }
 
   render() {
@@ -79,6 +148,8 @@ class Canvas extends Component {
         height="400"
         width="900"
         style={{ border: "1px solid black" }}
+        onMouseUp={this.onMouseUp}
+        onMouseDown={this.onMouseDown}
       ></canvas>
     )
   }
@@ -92,7 +163,11 @@ class NewtonPlot extends Component {
     }
 
     return (
-      <Canvas roots={this.props.roots} nNewtonSteps={this.props.nNewtonSteps} />
+      <Canvas
+        roots={this.props.roots}
+        nNewtonSteps={this.props.nNewtonSteps}
+        nTriangles={this.props.nTriangles}
+      />
     )
   }
 }
@@ -130,7 +205,7 @@ class Triangle {
       const diff = subtract(p1, p2)
       let magnitude = square(diff.re) + square(diff.im)
       // TODO: extract magic number
-      let metric = sameRoots ? magnitude / 3 : magnitude
+      let metric = sameRoots ? magnitude / 1.3 : magnitude
       metrics.push(metric)
 
       if (metric > max_metric.metric) {
@@ -138,6 +213,9 @@ class Triangle {
         max_metric.side = sides
       }
     })
+
+    // Calculate TODO organize
+    max_metric.metric = metrics.reduce((el, acc) => el * acc)
     this.metrics = metrics
     this.max_metric = max_metric
   }
@@ -180,7 +258,14 @@ class Triangle {
   }
 }
 
-function getTriangles(range, polynomial, derivative, roots, nNewtonSteps) {
+function getTriangles(
+  range,
+  polynomial,
+  derivative,
+  roots,
+  nNewtonSteps,
+  nTriangles
+) {
   // Starting two triangles
   const t1 = Triangle.fromPoints(
     [
@@ -210,8 +295,7 @@ function getTriangles(range, polynomial, derivative, roots, nNewtonSteps) {
 
   // TODO: extract magic number
   const start = new Date().getTime()
-  let nSteps = 10000
-  for (var _idx = 0; _idx < nSteps; _idx++) {
+  for (var _idx = 0; _idx < nTriangles; _idx++) {
     // remove triangle with largest metric and split it
     let triangleToSplit = triangles.pop()
     let [t1, t2] = triangleToSplit.split(
@@ -223,31 +307,6 @@ function getTriangles(range, polynomial, derivative, roots, nNewtonSteps) {
 
     triangles.push(t1)
     triangles.push(t2)
-
-    /*
-    // Insert new triangles into ordered list
-    // TODO make it in N, rather than 2N?
-    let insertAt = null
-    for (let i = 0; i < triangles.length; i++) {
-      const tt = triangles[i]
-      if (t1.max_metric.metric < tt.max_metric.metric) {
-        insertAt = i
-        break
-      }
-    }
-    insertAt = insertAt || insertAt === 0 ? insertAt : triangles.length
-    triangles.splice(insertAt, 0, t1)
-    insertAt = null
-    for (let i = 0; i < triangles.length; i++) {
-      const tt = triangles[i]
-      if (t2.max_metric.metric < tt.max_metric.metric) {
-        insertAt = i
-        break
-      }
-    }
-    insertAt = insertAt || insertAt === 0 ? insertAt : triangles.length
-    triangles.splice(insertAt, 0, t2)
-    */
   }
 
   console.log(
@@ -280,30 +339,4 @@ function getClosestRoot(point, polynomial, derivative, nNewtonSteps, roots) {
   )
 
   return closestRoot
-}
-
-function generateXYGrid(range, npoints) {
-  let xrange = linspace(range.x.min, range.x.max, npoints)
-  let yrange = linspace(range.y.min, range.y.max, npoints)
-
-  let res = {
-    x: [],
-    y: [],
-  }
-  xrange.forEach((x) =>
-    yrange.forEach((y) => {
-      res.x.push(x)
-      res.y.push(y)
-    })
-  )
-  return res
-}
-
-function linspace(start, stop, npoints) {
-  let step = (stop - start) / (npoints - 1)
-  let arr = []
-  for (let i = 0; i < npoints; i++) {
-    arr.push(start + i * step)
-  }
-  return arr
 }

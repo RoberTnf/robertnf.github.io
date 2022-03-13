@@ -19,7 +19,11 @@ class NewtonPlotContainer extends Component {
       inputs: inputs,
       roots: p,
       nNewtonSteps: {
-        n: 4,
+        n: 10,
+        valid: true,
+      },
+      nTriangles: {
+        n: 25000,
         valid: true,
       },
       focus: null,
@@ -46,6 +50,10 @@ class NewtonPlotContainer extends Component {
       formState.nNewtonSteps.n = event.target.value
       formState.nNewtonSteps.valid = /^\d+$/.test(formState.nNewtonSteps.n)
       newState.form = formState
+    } else if (name === "nTriangles") {
+      formState.nTriangles.n = event.target.value
+      formState.nTriangles.valid = /^\d+$/.test(formState.nTriangles.n)
+      newState.form = formState
     } else if (name === "rootInput") {
       try {
         if (idx === "empty") {
@@ -62,6 +70,7 @@ class NewtonPlotContainer extends Component {
           inputs: inputs,
           roots: p,
           nNewtonSteps: formState.nNewtonSteps,
+          nTriangles: formState.nTriangles,
           focus: focus,
         }
       } catch (err) {
@@ -85,11 +94,13 @@ class NewtonPlotContainer extends Component {
           roots={this.state.form.roots}
           focus={this.state.form.focus}
           nNewtonSteps={this.state.form.nNewtonSteps}
+          nTriangles={this.state.form.nTriangles}
           onFormChange={this.handleChangeForm}
         />
         <NewtonPlot
           roots={this.state.form.roots}
           nNewtonSteps={this.state.form.nNewtonSteps.n}
+          nTriangles={this.state.form.nTriangles.n}
         />
       </div>
     )

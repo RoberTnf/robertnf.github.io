@@ -75,7 +75,14 @@ class ImaginaryForm extends Component {
             onChange={this.handleChange}
             value={this.props.nNewtonSteps.n}
             css={this.props.nNewtonSteps.valid ? validInput : invalidInput}
-          ></input>
+          />
+          <span>Number of triangles: </span>
+          <input
+            name="nTriangles"
+            onChange={this.handleChange}
+            value={this.props.nTriangles.n}
+            css={this.props.nTriangles.valid ? validInput : invalidInput}
+          />
         </div>
       </div>
     )
