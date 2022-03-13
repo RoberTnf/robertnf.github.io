@@ -111,7 +111,7 @@ class NewtonPlotContainer extends Component {
           roots={this.state.form.roots}
           nNewtonSteps={this.state.form.nNewtonSteps.n}
           scale={this.state.form.scale.n}
-          npoints={this.state.form.nPoints.n}
+          nPoints={this.state.form.nPoints.n}
         />
       </div>
     )
