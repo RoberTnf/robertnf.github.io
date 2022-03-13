@@ -13,29 +13,30 @@ const Header = ({ siteTitle }) => (
       style={{
         margin: `2vw auto`,
         maxWidth: 960,
-        textAlign: "center"
+        textAlign: "center",
       }}
     >
-      <Link
-        to="/"
-      >
+      <Link to="/">
         <Image />
       </Link>
-      <Link
-        to="/"
-      >
-        <h1 style={{
-          margin: "16px",
-          fontSize: "46px"
-        }}>
+      <Link to="/">
+        <h1
+          style={{
+            margin: "16px",
+            fontSize: "46px",
+          }}
+        >
           {siteTitle}
         </h1>
       </Link>
-      <h2>
-        Data Scientist, Physicist & Full Stack Web Developer
-      </h2>
+      <h2>Data Scientist, Physicist & Full Stack Web Developer</h2>
       <p>
-        <Link to="mailto:robertodiaztnf@gmail.com"><span className="material-icons" css={{ verticalAlign: "middle" }}>mail_outline</span> <span>robertodiaztnf@gmail.com</span></Link>
+        <a href="mailto:robertodiaztnf@gmail.com">
+          <span className="material-icons" style={{ verticalAlign: "middle" }}>
+            mail_outline
+          </span>{" "}
+        </a>
+        | <Link to="/posts">Posts</Link>
       </p>
     </div>
     <hr />

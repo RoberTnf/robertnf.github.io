@@ -1,35 +1,28 @@
 import React from "react"
+import styled from "@emotion/styled"
 
+const Container = styled.div`
+  display: grid;
+  grid-template-columns: 20% 80%;
+  margin-bottom: 36px;
+`
+
+const Left = styled.div`
+  border-right: 1px solid black;
+  text-align: center;
+`
+
+const Right = styled.div`
+  margin-left: 16px;
+`
 
 const Experience = (props) => {
-    return <div css={{
-        // "@media (minWidth:5px)": {
-            display: "grid",
-            gridTemplateColumns: "20% 80%",
-        // },
-        marginBottom: "36px"
-    }}>
-        <div css={{
-            // "@media (minWidth:5px)": {
-                borderRight: "1px solid black",
-                textAlign: "center"
-            // },
-            // "@media (maxWidth:5px)": {
-            //     display: "inline"
-            // }
-        }}>{props.dates}</div>
-        <div css={{
-            // "@media (minWidth:5px)": {
-                marginLeft: "16px"
-            // },
-            // "@media (maxWidth:5px)": {
-            //     display: "inline"
-            // }
-
-        }} >
-            {props.content}
-        </div>
-    </div>
+  return (
+    <Container>
+      <Left>{props.dates}</Left>
+      <Right>{props.content}</Right>
+    </Container>
+  )
 }
 
-export default Experience;
+export default Experience

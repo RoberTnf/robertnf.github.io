@@ -1,34 +1,39 @@
 import React from "react"
 import { StaticQuery, graphql } from "gatsby"
-import Img from "gatsby-image"
+import { GatsbyImage } from "gatsby-plugin-image"
+import { css } from "@emotion/react"
 
 /*
-* Personal image, in the header
-*/
+ * Personal image, in the header
+ */
+
+const imageCSS = css`
+  border-radius: 50%;
+  border: solid 4px #007199;
+  &:hover {
+    border: solid 4px #cc6c9d;
+  }
+  margin: auto;
+`
 
 const Image = () => (
   <StaticQuery
     query={graphql`
-    query {
-      file(relativePath: { eq: "roberto_bw.jpg" }) {
-        childImageSharp {
-          # Specify the image processing specifications right in the query.
-          # Makes it trivial to update as your page's design changes.
-          fixed(quality: 90) {
-            ...GatsbyImageSharpFixed_noBase64
+      {
+        file(relativePath: { eq: "roberto_bw.jpg" }) {
+          childImageSharp {
+            gatsbyImageData(quality: 90, placeholder: NONE, layout: FIXED)
           }
         }
       }
-    }
     `}
-    render={data => <Img fixed={data.file.childImageSharp.fixed} css={{
-      borderRadius: "50%",
-      border: "solid 4px #007199",
-      "&:hover": {
-        border: "solid 4px #0096cc",
-      }
-
-    }} />}
+    render={(data) => (
+      <GatsbyImage
+        image={data.file.childImageSharp.gatsbyImageData}
+        css={imageCSS}
+        alt="Personal Image"
+      ></GatsbyImage>
+    )}
   />
 )
 export default Image

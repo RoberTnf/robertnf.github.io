@@ -24,7 +24,7 @@ const Layout = ({ children }) => (
         }
       }
     `}
-    render={data => (
+    render={(data) => (
       <>
         <Header siteTitle={data.site.siteMetadata.title} />
         <div
@@ -35,9 +35,17 @@ const Layout = ({ children }) => (
             paddingTop: 0,
           }}
         >
-          <main >{children}</main>
-          <div>
-            © {new Date().getFullYear()}, Source code at: <a href="https://github.com/RoberTnf/robertnf.github.io" rel='noreferrer noopener' target='blank'> https://github.com/RoberTnf/robertnf.github.io </a>
+          <main>{children}</main>
+          <div style={{ margin: `2vw auto` }}>
+            © {new Date().getFullYear()}, Source code at:{" "}
+            <a
+              href="https://github.com/RoberTnf/robertnf.github.io"
+              rel="noreferrer noopener"
+              target="blank"
+            >
+              {" "}
+              https://github.com/RoberTnf/robertnf.github.io{" "}
+            </a>
           </div>
         </div>
       </>
