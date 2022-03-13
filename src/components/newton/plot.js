@@ -9,8 +9,6 @@ class Canvas extends Component {
   constructor(props) {
     super(props)
     this.ref = createRef()
-    this.height = 400
-    this.width = 900
     this.drawFractal = this.drawFractal.bind(this)
     this.onMouseDown = this.onMouseDown.bind(this)
     this.onMouseUp = this.onMouseUp.bind(this)
@@ -26,10 +24,11 @@ class Canvas extends Component {
   }
 
   coordToPx = (x, y, range) => {
+    const canvas = this.ref.current
     const xFraction = (x - range.x.min) / (range.x.max - range.x.min)
     const yFraction = (y - range.y.min) / (range.y.max - range.y.min)
 
-    return [xFraction * this.width, this.height * (1 - yFraction)]
+    return [xFraction * canvas.width, canvas.height * (1 - yFraction)]
   }
   PxToCoord = (x, y, range) => {
     const canvas = this.ref.current
@@ -51,30 +50,19 @@ class Canvas extends Component {
 
     const polynomial = Polynomial.fromRoots(roots)
     const derivative = polynomial.derivative
-    const triangles = getTriangles(
+    const triangles = this.getTriangles(
       this.state.range,
       polynomial,
       derivative,
       roots,
-      this.props.nNewtonSteps,
-      this.props.nTriangles
+      this.props.nNewtonSteps
     )
 
-    triangles.content.forEach((tt) => {
+    triangles.forEach((tt) => {
       ctx.beginPath()
-      const [p1, p2, p3] = tt.points.map((el) =>
-        this.coordToPx(el.re, el.im, this.state.range)
-      )
-      ctx.moveTo(...p1)
-      ctx.lineTo(...p2)
-      ctx.lineTo(...p3)
-      ctx.lineTo(...p1)
-      ctx.fillStyle = "#" + pal[tt.closestRoot[0]]
-      ctx.strokeStyle = "black"
-      ctx.strokeStyle = "#" + pal[tt.closestRoot[0]]
-      ctx.lineWidth = 2
-      ctx.fill()
-      ctx.stroke()
+      let p1 = this.coordToPx(tt.x, tt.y, this.state.range)
+      ctx.fillStyle = "#" + pal[tt.z]
+      ctx.fillRect(p1[0], p1[1], -this.props.scale, -this.props.scale)
 
       if (false) {
         ctx.strokeStyle = "black"
@@ -85,12 +73,12 @@ class Canvas extends Component {
         ctx.fill()
         ctx.stroke()
         ctx.beginPath()
-        ctx.arc(...p2, 1, 0, 2 * pi)
+        //ctx.arc(...p2, 1, 0, 2 * pi)
         ctx.fillStyle = "#" + pal[tt.closestRoot[1]]
         ctx.fill()
         ctx.stroke()
         ctx.beginPath()
-        ctx.arc(...p3, 1, 0, 2 * pi)
+        //ctx.arc(...p3, 1, 0, 2 * pi)
         ctx.fillStyle = "#" + pal[tt.closestRoot[2]]
         ctx.fill()
         ctx.stroke()
@@ -99,7 +87,7 @@ class Canvas extends Component {
     roots.r.forEach((r, i) => {
       const p = this.coordToPx(r.re, r.im, this.state.range)
       ctx.beginPath()
-      ctx.arc(...p, 5, 0, 2 * pi)
+      ctx.arc(p[0], p[1], 5, 0, 2 * pi)
       ctx.fillStyle = "#" + pal[i]
       ctx.strokeStyle = "#000"
       ctx.lineWidth = 2
@@ -141,12 +129,37 @@ class Canvas extends Component {
     this.handleChangeRange(range)
   }
 
+  getTriangles(range, polynomial, derivative, roots, nNewtonSteps) {
+    let points = []
+    for (var i = 0; i < this.props.npoints; i++) {
+      for (var j = 0; j < this.props.npoints; j++) {
+        let p = this.PxToCoord(
+          i * this.props.scale,
+          j * this.props.scale,
+          range
+        )
+        points.push({
+          x: p[0],
+          y: p[1],
+          z: getClosestRoot(
+            complex(...p),
+            polynomial,
+            derivative,
+            nNewtonSteps,
+            roots
+          ),
+        })
+      }
+    }
+    return points
+  }
+
   render() {
     return (
       <canvas
         ref={this.ref}
-        height="400"
-        width="900"
+        height={(this.props.npoints * this.props.scale).toString()}
+        width={(this.props.npoints * this.props.scale).toString()}
         style={{ border: "1px solid black" }}
         onMouseUp={this.onMouseUp}
         onMouseDown={this.onMouseDown}
@@ -166,7 +179,8 @@ class NewtonPlot extends Component {
       <Canvas
         roots={this.props.roots}
         nNewtonSteps={this.props.nNewtonSteps}
-        nTriangles={this.props.nTriangles}
+        scale={this.props.scale}
+        npoints={this.props.npoints}
       />
     )
   }
@@ -256,68 +270,6 @@ class Triangle {
 
     return [t1, t2]
   }
-}
-
-function getTriangles(
-  range,
-  polynomial,
-  derivative,
-  roots,
-  nNewtonSteps,
-  nTriangles
-) {
-  // Starting two triangles
-  const t1 = Triangle.fromPoints(
-    [
-      complex(range.x.min, range.y.min),
-      complex(range.x.min, range.y.max),
-      complex(range.x.max, range.y.min),
-    ],
-    polynomial,
-    derivative,
-    roots,
-    nNewtonSteps
-  )
-  const t2 = Triangle.fromPoints(
-    [
-      complex(range.x.min, range.y.max),
-      complex(range.x.max, range.y.max),
-      complex(range.x.max, range.y.min),
-    ],
-    polynomial,
-    derivative,
-    roots,
-    nNewtonSteps
-  )
-  let triangles = new BinaryHeap((el) => -el.max_metric.metric)
-  triangles.push(t1)
-  triangles.push(t2)
-
-  // TODO: extract magic number
-  const start = new Date().getTime()
-  for (var _idx = 0; _idx < nTriangles; _idx++) {
-    // remove triangle with largest metric and split it
-    let triangleToSplit = triangles.pop()
-    let [t1, t2] = triangleToSplit.split(
-      polynomial,
-      derivative,
-      roots,
-      nNewtonSteps
-    )
-
-    triangles.push(t1)
-    triangles.push(t2)
-  }
-
-  console.log(
-    "Generated " +
-      triangles.content.length +
-      " triangles in " +
-      (new Date().getTime() - start) +
-      " ms"
-  )
-
-  return triangles
 }
 
 function getClosestRoot(point, polynomial, derivative, nNewtonSteps, roots) {

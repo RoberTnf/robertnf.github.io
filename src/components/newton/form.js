@@ -22,8 +22,6 @@ const polynomialAttribContainer = css`
   grid-template-columns: 50% 50%;
 `
 
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend)
-
 class ImaginaryForm extends Component {
   constructor(props) {
     super(props)
@@ -76,12 +74,19 @@ class ImaginaryForm extends Component {
             value={this.props.nNewtonSteps.n}
             css={this.props.nNewtonSteps.valid ? validInput : invalidInput}
           />
-          <span>Number of triangles: </span>
+          <span>Number of points: </span>
           <input
-            name="nTriangles"
+            name="nPoints"
             onChange={this.handleChange}
-            value={this.props.nTriangles.n}
-            css={this.props.nTriangles.valid ? validInput : invalidInput}
+            value={this.props.nPoints.n}
+            css={this.props.nPoints.valid ? validInput : invalidInput}
+          />
+          <span>Scale: </span>
+          <input
+            name="scale"
+            onChange={this.handleChange}
+            value={this.props.scale.n}
+            css={this.props.scale.valid ? validInput : invalidInput}
           />
         </div>
       </div>
