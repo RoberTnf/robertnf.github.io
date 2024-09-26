@@ -4,7 +4,7 @@ export const metadata = {
 	title: "What is Bullet Chess Heaven?",
 	publishedAt: new Date("2024-09-26"),
 	updatedAt: new Date("2024-09-26"),
-	categories: ["gamedev", "bch"],
+	categories: ["gamedev", "bch", "rust", "godot"],
 };
 
 export default function WhatIsBulletChessHeaven() {
@@ -43,7 +43,8 @@ export default function WhatIsBulletChessHeaven() {
 
 		<p>
 			I will aim to release a new blog post every two weeks, and to snapshot the game every two weeks. This is the current state of the codebase:
-			<a href="https://github.com/RoberTnf/bullet_chess_heaven_rs/commit/890011a7d4a17564c09aecba26380560d29c6697" target="_blank">github commit</a>.
+			<a href="https://github.com/RoberTnf/bullet_chess_heaven_rs/commit/890011a7d4a17564c09aecba26380560d29c6697" target="_blank"> github commit</a>.
+			<i>Yes, it is just a new cargo project with nothing in it. Wait for the next update!.</i>
 		</p>
 
 	</div>
