@@ -3,25 +3,49 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #101015;
+  --text: white;
+  --accent: #d7c334;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  @apply bg-background;
 }
+
 
 body {
-  color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+a {
+  @apply underline text-accent;
+}
+
+h1 {
+  @apply text-4xl font-bold my-8 font-mono;
+}
+
+h2 {
+  @apply text-3xl font-bold my-8 font-mono;
+}
+
+h3 {
+  @apply text-2xl font-bold my-8 font-mono;
+}
+
+p {
+  @apply my-8 font-sans;
+}
+
+.caret {
+  @apply before:content-['➤'] before:mr-2 before:text-accent;
+}
+
+.wip {
+  @apply text-red-500 font-mono bg-black p-2 rounded-md;
+}
+
+.emphasis {
+  @apply text-accent font-mono bg-black p-2 rounded-md;
 }
