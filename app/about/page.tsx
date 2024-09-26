@@ -32,19 +32,19 @@ export default function About() {
 
 		<div className="grid grid-cols-2 gap-2 ml-8">
 			<div className="caret">Python</div>
-			<div>⭐⭐⭐⭐⭐</div>
+			<div className="text-accent">★★★★★</div>
 			<div className="caret">SQL</div>
-			<div>⭐⭐⭐⭐⭐</div>
+			<div className="text-accent">★★★★★</div>
 			<div className="caret">Typescript</div>
-			<div>⭐⭐⭐⭐</div>
+			<div className="text-accent">★★★★☆</div>
 			<div className="caret">GDScript</div>
-			<div>⭐⭐⭐</div>
+			<div className="text-accent">★★★☆☆</div>
 			<div className="caret">Rust (learning, check out <Link href="/blog/category/rust">my blog posts</Link>)</div>
-			<div>⭐⭐</div>
+			<div className="text-accent">★★★☆☆</div>
 			<div className="caret">Haskell</div>
-			<div>⭐⭐</div>
+			<div className="text-accent">★★☆☆☆</div>
 			<div className="caret">Bash</div>
-			<div>⭐⭐</div>
+			<div className="text-accent">★★☆☆☆</div>
 		</div>
 
 		<h2>Interests</h2>
