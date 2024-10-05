@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function About() {
 	return <div>
 		<h1>About me</h1>
-		<hr className="border-dashed border-2 my-4" />
+		<hr />
 
 		<h2>Summary</h2>
 

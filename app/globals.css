@@ -12,7 +12,6 @@ html {
   @apply bg-background;
 }
 
-
 body {
   background: var(--background);
   color: var(--text);
@@ -48,4 +47,8 @@ p {
 
 .emphasis {
   @apply text-accent font-mono bg-black p-2 rounded-md;
+}
+
+hr {
+  @apply border-dashed border-2 my-4;
 }
