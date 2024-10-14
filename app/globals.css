@@ -17,6 +17,10 @@ body {
   color: var(--text);
 }
 
+input {
+  @apply bg-background text-accent;
+}
+
 a {
   @apply underline text-accent;
 }

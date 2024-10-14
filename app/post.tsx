@@ -6,6 +6,7 @@ export interface Post {
 	publishedAt: Date;
 	updatedAt: Date;
 	categories: string[];
+	subtitle?: string;
 }
 
 export async function getPosts(): Promise<Post[]> {
@@ -26,7 +27,7 @@ export async function getPosts(): Promise<Post[]> {
 	);
 
 	// Sort posts from newest to oldest
-	posts.sort((a, b) => +new Date(b.publishDate) - +new Date(a.publishDate));
+	posts.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
 	return posts;
 }
