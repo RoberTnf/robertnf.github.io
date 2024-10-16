@@ -115,7 +115,8 @@ export default function BulletChessHeavenInBevy() {
                 <li className="caret">MacOS</li>
                 <li className="caret">Wasm</li>
             </ul>
-            And they are available to download <a href="https://github.com/RoberTnf/bullet_chess_heaven_rs/releases">here</a>.
+            And they are available to download <a href="https://github.com/RoberTnf/bullet_chess_heaven_rs/releases">here</a>. As of 2024-10-16,
+            the release is <a href="https://github.com/RoberTnf/bullet_chess_heaven_rs/releases/tag/0.1.3">v0.1.3</a>.
         </p>
         <p>
             On top of that, the wasm version of the game is hosted on github pages and then made available in this blog through an iframe,
