@@ -13,7 +13,7 @@ export default function Contact() {
     return <div>
         <h1>Contact me</h1>
         <p>You can contact me at: <span className="email-address">
-            {email || 'Loading...'}
+            {email || 'Loading email with js to avoid spam bots'}
         </span></p>
     </div>
 }
