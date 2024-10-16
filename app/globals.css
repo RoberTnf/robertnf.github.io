@@ -5,7 +5,9 @@
 :root {
   --background: #101015;
   --text: white;
-  --accent: #d7c334;
+  --accent: #f7e374;
+  --link_hover: #00ffff;
+  --link: #006666;
 }
 
 html {
@@ -22,7 +24,7 @@ input {
 }
 
 a {
-  @apply underline text-accent;
+  @apply underline text-link hover:text-link_hover;
 }
 
 h1 {
@@ -50,7 +52,7 @@ p {
 }
 
 .emphasis {
-  @apply text-accent font-mono bg-black p-2 rounded-md;
+  @apply text-accent font-mono p-2 rounded-md;
 }
 
 hr {
