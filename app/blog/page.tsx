@@ -15,9 +15,9 @@ export default async function Blog() {
         <p>
             However, the main reason is that it forces me to live my technical life in a way that I seek interesting
             ideas to share. I aim to write a new blog post every other week, so I need to keep learning and thinking.
-            What I write might not be the highest quality material, or novel, or even interesting. But it is something that
-            <span className="emphasis">I</span> wrote. And I&apos;ve learnt that writing is crucial to learning. It forces me to
-            think about what I&apos;m writing and understand in a deeper way.
+            What I write might not be the highest quality material, or novel, or even interesting. But, it is something that
+            <span className="emphasis">I</span> wrote. And I&apos;ve learned that writing is crucial to learning. It forces me to
+            think about what I&apos;m writing and understand it in a deeper way.
         </p>
         <h2>Did you find my blog?</h2>
         <p>
