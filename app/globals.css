@@ -23,20 +23,26 @@ input {
   @apply bg-background text-accent;
 }
 
-a {
-  @apply underline text-link hover:text-link_hover;
-}
-
 h1 {
-  @apply text-4xl font-bold my-8 font-mono;
+  @apply text-4xl;
 }
 
 h2 {
-  @apply text-3xl font-bold my-8 font-mono;
+  @apply text-3xl;
 }
 
 h3 {
-  @apply text-2xl font-bold my-8 font-mono;
+  @apply text-2xl;
+}
+
+h1,
+h2,
+h3 {
+  @apply font-bold my-8 font-mono emphasis;
+}
+
+a {
+  @apply underline emphasis hover:text-link_hover;
 }
 
 p {
@@ -52,9 +58,21 @@ p {
 }
 
 .emphasis {
-  @apply text-accent font-mono p-2 rounded-md;
+  @apply text-accent font-mono rounded-md font-bold;
 }
 
 hr {
   @apply border-dashed border-2 my-4;
+}
+
+ul ul {
+  @apply list-inside ml-4;
+}
+
+li {
+  @apply my-2;
+}
+
+b {
+  @apply emphasis;
 }
