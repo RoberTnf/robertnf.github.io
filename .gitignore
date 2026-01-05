@@ -36,3 +36,7 @@ yarn-error.log*
 next-env.d.ts
 yahtzee_rs/target/
 yahtzee_rs/pkg/
+
+# nix
+.direnv/
+result
