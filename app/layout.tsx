@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
 import Nav from "./components/nav";
 import Footer from "./components/footer";
@@ -43,6 +44,11 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased font-mono bg-background min-h-screen`}
             >
+                <Script
+                    defer
+                    src="https://analytics.kesslersarena.com/script.js"
+                    data-website-id="13999d23-8590-4846-aeda-2dba03b2a3ac"
+                />
                 <div className="max-w-screen-lg mx-auto px-2">
                     <Nav />
                     {children}
